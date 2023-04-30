@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordl-solver-frontend-conf
+data:
+  nginx.conf: |
+    # The identifier backend is internal to nginx, and used to name this specific upstream
+    upstream backend {
+        # The internal DNS name used by the backend Service inside Kubernetes
+        server wordl-solver-backend-service:4000;
+    }
+
+    server {
+        listen       80;
+        listen       4000;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+
+        location /wordl {
+            # The following statement will proxy traffic to the upstream named backend
+            proxy_pass http://backend/wordl;
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordl-solver-frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordl-solver
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: wordl-solver
+        tier: frontend
+    spec:
+      containers:
+      - name: wordl-solver-frontend
+        image: rajthecat/wordl-solver-frontend:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "356Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: conf
+          configMap:
+            name: wordl-solver-frontend-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordl-solver-frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: wordl-solver
+    tier: frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
