@@ -94,3 +94,15 @@ mark.red {
   background: none;
 }
 
+.buttonblack {
+  background-color: "gray" !important;
+  color: "white" !important;
+}
+.buttonyellow {
+  background-color: "yellow" !important;
+  color: "blue" !important;
+}
+.buttongreen {
+  background-color: "darkgreen" !important;
+  color: "white" !important;
+}

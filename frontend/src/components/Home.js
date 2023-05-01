@@ -18,8 +18,6 @@ function Home() {
     const [entered, setEntered] = useState([]);
 
     const handleSubmit = async (event) => {
-
-
         event.preventDefault();
 
         try {
