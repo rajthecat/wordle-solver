@@ -2,7 +2,7 @@ import './App.css';
 import Home from './components/Home'
 import Form from './components/Form'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (

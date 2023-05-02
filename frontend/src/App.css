@@ -1,3 +1,28 @@
+input {
+  width: 20px;
+  padding: 10px;
+  text-align: center;
+  font-size: 2rem;
+}
+
+select {
+  width: 44px;
+  padding: 5px;
+}
+
+.inputblack {
+  background-color: gray;
+  color: white;
+}
+.inputyellow {
+  background-color: yellow;
+  color: gray;
+}
+.inputgreen {
+  background-color: darkgreen;
+  color: white;
+}
+
 .App {
   text-align: center;
 }
@@ -94,15 +119,3 @@ mark.red {
   background: none;
 }
 
-.buttonblack {
-  background-color: "gray" !important;
-  color: "white" !important;
-}
-.buttonyellow {
-  background-color: "yellow" !important;
-  color: "blue" !important;
-}
-.buttongreen {
-  background-color: "darkgreen" !important;
-  color: "white" !important;
-}
