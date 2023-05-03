@@ -7,6 +7,12 @@
   padding: 10px;
 }
 
+td.info {
+  text-align: center;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
 td.result {
   width: 33%
 }
@@ -51,9 +57,13 @@ select {
   }
 }
 
+html {
+  background-color: #282c34;
+}
+
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,11 +74,11 @@ select {
 
 .App-body {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 50vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   font-size: calc(4px + 2vmin);
   color: white;
 }
@@ -79,17 +89,39 @@ select {
   font-size: 12px;
 }
 
-.App-link {
-  color: #61dafb;
+/* unvisited link */
+a:link {
+  color: cadetblue;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* visited link */
+a:visited {
+  color: cadetblue;
+}
+
+/* mouse over link */
+a:hover {
+  color: blue;
+}
+
+/* selected link */
+a:active {
+  color: blue;
+}
+
+.instructions {
+  color: cadetblue;
+  text-decoration: underline;
+}
+
+.App-link {
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: left;
+  font-size: calc(4px + 2vmin);
 }
 
 nav ul{height:250px; width:100%;}
@@ -112,26 +144,6 @@ ul {
   padding: 10px;
 }
 
-mark.green {
-  color:green;
-  background: none;
-}
-
-mark.gray {
-  color:gray;
-  background: none;
-}
-
-mark.yellow {
-  color:yellow;
-  background: none;
-}
-
-mark.red {
-  color:red;
-  background: none;
-}
-
 mark.g {
   color:green;
   background: none;
@@ -145,4 +157,52 @@ mark.b {
 mark.y {
   color:yellow;
   background: none;
+}
+
+.image-container {
+  position: fixed;
+}
+
+.info-instructions {
+  position: absolute;
+
+}
+
+.info-table {
+  width: 60%;
+  background-color: darkslategray;
+  color: white;
+  border: black;
+  border: 1px solid;
+  border-collapse: collapse;
+  text-align: center;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.instructions-table {
+  width: 35%;
+  text-align: center;
+  padding: 10px;
+}
+
+.info-text {
+  font-size: calc(4px + 1vmin);
+  text-align: left;
+  width: 40%;
+  border: 1px solid;
+  border-collapse: collapse;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.info-image {
+  width: 70%;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.info-image img {
+  width: 75%;
+  height: auto;
 }

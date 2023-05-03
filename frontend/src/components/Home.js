@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import '../App'
+import '../App.css'
 
 function Home() {
     const [guessArray, setGuessArray] = useState(['', '', '', '', '']);
@@ -55,9 +55,9 @@ function Home() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const newPreviousGuesses = [...previousGuesses, { 
-            guessArray: guessArray, 
-            resultArray: resultArray 
+        const newPreviousGuesses = [...previousGuesses, {
+            guessArray: guessArray,
+            resultArray: resultArray
         }];
         setPreviousGuesses(newPreviousGuesses);
 
@@ -142,57 +142,60 @@ function Home() {
                     </table>
                 </form>
             </div>
-            <table className='result'>
-                <thead>
-                    <tr>
-                        <th className='result'>
-                            Results:
-                        </th>
-                        <th className='result'>
-                            Words: {apiResults.words.length}
-                        </th>
-                        <th className='result'>
-                            Letters: {apiResults.letters.length}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td className='result'>
-                        {previousGuesses.map((previousGuess, index) => (
-                            <div key={index}>
-                                {previousGuess.guessArray.map((guess, index) => (
-                                    <mark key={index} className={`${previousGuess.resultArray[index]}`}>
-                                        {guess}
-                                    </mark>
+            <br />
+            <div>
+                <table className='result'>
+                    <thead>
+                        <tr>
+                            <th className='result'>
+                                Results:
+                            </th>
+                            <th className='result'>
+                                Words: {apiResults.words.length}
+                            </th>
+                            <th className='result'>
+                                Letters: {apiResults.letters.length}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className='result'>
+                                {previousGuesses.map((previousGuess, index) => (
+                                    <div key={index}>
+                                        {previousGuess.guessArray.map((guess, index) => (
+                                            <mark key={index} className={`${previousGuess.resultArray[index]}`}>
+                                                {guess}
+                                            </mark>
+                                        ))}
+                                    </div>
                                 ))}
-                            </div>
-                        ))}
 
-                        </td>
-                        <td className='result'>
-                            {
+                            </td>
+                            <td className='result'>
+                                {
+                                    <nav>
+                                        <ul>
+                                            {apiResults.words.map(function (name, index) {
+                                                return <li key={index}>{name}</li>;
+                                            })}
+                                        </ul>
+                                    </nav>
+                                }
+                            </td>
+                            <td className='result'>
                                 <nav>
                                     <ul>
-                                        {apiResults.words.map(function (name, index) {
-                                            return <li key={index}>{name}</li>;
+                                        {apiResults.letters.map(letter => {
+                                            return <li key={letter.char}>{letter.char} : {letter.count}</li>;
                                         })}
                                     </ul>
                                 </nav>
-                            }
-                        </td>
-                        <td className='result'>
-                            <nav>
-                                <ul>
-                                    {apiResults.letters.map(letter => {
-                                        return <li key={letter.char}>{letter.char} : {letter.count}</li>;
-                                    })}
-                                </ul>
-                            </nav>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <p className="App-message">Message: {apiResults.message}</p>
         </>
     );
