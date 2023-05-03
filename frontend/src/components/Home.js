@@ -1,168 +1,200 @@
-import React, { useEffect, useState } from "react";
-import { Form, Button, ButtonGroup } from 'react-bootstrap';
+import React, { useState, useRef, useEffect } from 'react';
+import '../App'
 
 function Home() {
-    useEffect(() => {
-        fetchWords();
-    }, []);
-
-    const [wordl, setWords] = useState({
+    const [guessArray, setGuessArray] = useState(['', '', '', '', '']);
+    const [resultArray, setResultArray] = useState(['b', 'b', 'b', 'b', 'b']);
+    const inputsRef = useRef([]);
+    const [previousGuesses, setPreviousGuesses] = useState([]);
+    const [apiResults, setApiResults] = useState({
         words: [],
         message: '',
         letters: []
     });
-    const [state, setState] = useState({
-        guess: '',
-        result: ''
-    });
-    const [entered, setEntered] = useState([]);
+
+    useEffect(() => {
+        inputsRef.current[0].focus();
+        fetchWords();
+    }, []);
+
+    const fetchWords = async () => {
+        const data = await fetch("/wordl");
+        console.log(data.status);
+        const json = await data.json();
+        setApiResults(json);
+    };
+
+    const handleChange = (index, event) => {
+        const value = event.target.value;
+        const regex = /^[a-zA-Z]+$/;
+
+        if (value === '' || regex.test(value)) {
+            const newValues = [...guessArray];
+            newValues[index] = value.toUpperCase();
+
+            setGuessArray(newValues);
+
+            if (value !== '' && index < inputsRef.current.length - 1) {
+                inputsRef.current[index + 1].focus();
+            }
+        }
+    };
+
+    const handleKeyDown = (index, event) => {
+        if (event.key === 'Backspace' && index > 0 && guessArray[index] === '') {
+            inputsRef.current[index - 1].focus();
+        }
+    };
+
+    const handleColorChange = (index, event) => {
+        const newSelectedColors = [...resultArray];
+        newSelectedColors[index] = event.target.value;
+        setResultArray(newSelectedColors);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        try {
-            let coloredEntry = "";
-            for (let i = 0; i < state.result.length; i++) {
-                switch (state.result[i]) {
-                    case 'b':
-                        coloredEntry += `<mark class="gray">` + state.guess[i] + `</mark>`;
-                        break;
-                    case 'g':
-                        coloredEntry += `<mark class="green">` + state.guess[i] + `</mark>`;
-                        break;
-                    case 'y':
-                        coloredEntry += `<mark class="yellow">` + state.guess[i] + `</mark>`;
-                        break;
-                    default:
-                        coloredEntry += `<mark class="red">` + state.guess[i] + `</mark>`;
+        const newPreviousGuesses = [...previousGuesses, { 
+            guessArray: guessArray, 
+            resultArray: resultArray 
+        }];
+        setPreviousGuesses(newPreviousGuesses);
+
+        const requestOptions = {
+            method: "POST",
+            mode: "cors",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+                {
+                    guess: guessArray.join('').toLowerCase(),
+                    result: resultArray.join(''),
+                    words: apiResults.words
                 }
-
-            }
-            setEntered([...entered, coloredEntry])
-            const requestOptions = {
-                method: "POST",
-                mode: "cors",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(
-                    {
-                        guess: state.guess,
-                        result: state.result,
-                        words: wordl.words
-                    }
-                ),
-            };
-            const data = await fetch("/wordl", requestOptions);
-            const json = await data.json();
-
-            setWords(json);
-
-        } catch (err) {
-            console.log(err);
-        }
-        setState({
-            guess: '',
-            result: ''
-        })
-    };
-
-    const onInputChange = event => {
-        const { name, value } = event.target;
-
-        setState({
-            ...state,
-            [name]: value
-        });
-    };
-
-    const fetchWords = async () => {
-        setState({
-            guess: '',
-            result: ''
-        })
-        setEntered([]);
-        const data = await fetch("/wordl");
-        console.log(data.status);
+            ),
+        };
+        console.log(requestOptions);
+        const data = await fetch("/wordl", requestOptions);
         const json = await data.json();
-        setWords(json);
+
+        setApiResults(json);
+        setGuessArray(['', '', '', '', '']);
+        setResultArray(['b', 'b', 'b', 'b', 'b']);
+        inputsRef.current[0].focus();
+    };
+
+    const handleReset = () => {
+        setGuessArray(['', '', '', '', '']);
+        setResultArray(['b', 'b', 'b', 'b', 'b']);
+        setPreviousGuesses([]);
+        fetchWords();
+        inputsRef.current[0].focus();
     };
 
     return (
-        <section>
+        <>
             <div>
-                <form onSubmit={handleSubmit}>
-                    <Form.Group controlId="guess">
-                        <Form.Label>Guess: </Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="guess"
-                            maxLength="5"
-                            value={state.guess}
-                            placeholder="Enter the guess"
-                            onChange={onInputChange}
-                            autoFocus
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="result">
-                        <Form.Label>Result: </Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="result"
-                            maxLength="5"
-                            value={state.result}
-                            placeholder="bbygb"
-                            onChange={onInputChange}
-                        />
-                    </Form.Group>
-                    <ButtonGroup>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                        <Button variant="secondary" type="reset" onClick={fetchWords}>
-                            Reset
-                        </Button>
-                    </ButtonGroup>
+                <form>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Guess:
+                                </td>
+                                <td>
+                                    {guessArray.map((value, index) => (
+                                        <input
+                                            key={index}
+                                            type="text"
+                                            value={value}
+                                            onChange={(event) => handleChange(index, event)}
+                                            onKeyDown={(event) => handleKeyDown(index, event)}
+                                            maxLength={1}
+                                            className={`input${resultArray[index]}`}
+                                            ref={(el) => inputsRef.current[index] = el}
+                                        />
+                                    ))}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Result:
+                                </td>
+                                <td>
+                                    {guessArray.map((value, index) => (
+                                        <select key={index} value={resultArray[index]} className={`input${resultArray[index]}`} onChange={(event) => handleColorChange(index, event)}>
+                                            <option value="b" className={`inputb`}>B</option>
+                                            <option value="y" className={`inputy`}>Y</option>
+                                            <option value="g" className={`inputg`}>G</option>
+                                        </select>
+                                    ))}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    <button type="submit" onClick={handleSubmit}>Submit</button>
+                                    <button type="button" onClick={handleReset}>Reset</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </form>
             </div>
-            {
-                <>
-                    <div className="row">
-                        <div className="column">
-                            <p>Results:</p>
+            <table className='result'>
+                <thead>
+                    <tr>
+                        <th className='result'>
+                            Results:
+                        </th>
+                        <th className='result'>
+                            Words: {apiResults.words.length}
+                        </th>
+                        <th className='result'>
+                            Letters: {apiResults.letters.length}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td className='result'>
+                        {previousGuesses.map((previousGuess, index) => (
+                            <div key={index}>
+                                {previousGuess.guessArray.map((guess, index) => (
+                                    <mark key={index} className={`${previousGuess.resultArray[index]}`}>
+                                        {guess}
+                                    </mark>
+                                ))}
+                            </div>
+                        ))}
+
+                        </td>
+                        <td className='result'>
                             {
-                                <ul>
-                                    {entered.map((entry, index) => {
-                                        return <li key={index}><div className="content" dangerouslySetInnerHTML={{ __html: entry }}></div></li>;
-                                    })}
-                                </ul>
-                            }
-                        </div>
-                        <div className="column">
-                            <p>Words: {wordl.words.length} </p>{
                                 <nav>
                                     <ul>
-                                        {wordl.words.map(function (name, index) {
+                                        {apiResults.words.map(function (name, index) {
                                             return <li key={index}>{name}</li>;
                                         })}
                                     </ul>
                                 </nav>
                             }
-                        </div>
-                        <div className="column">
-                            <p>Letters: {wordl.letters.length} </p>{
-                                <nav>
-                                    <ul>
-                                        {wordl.letters.map(letter => {
-                                            return <li key={letter.char}>{letter.char} : {letter.count}</li>;
-                                        })}
-                                    </ul>
-                                </nav>
-                            }
-                        </div>
-                    </div>
-                    <p className="App-message">Message: {wordl.message}</p>
-                </>
-            }
-        </section>
+                        </td>
+                        <td className='result'>
+                            <nav>
+                                <ul>
+                                    {apiResults.letters.map(letter => {
+                                        return <li key={letter.char}>{letter.char} : {letter.count}</li>;
+                                    })}
+                                </ul>
+                            </nav>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p className="App-message">Message: {apiResults.message}</p>
+        </>
     );
 }
 

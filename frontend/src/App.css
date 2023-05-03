@@ -1,8 +1,21 @@
+
+.result {
+  border: 1px solid;
+  border-collapse: collapse;
+  text-align: center;
+  vertical-align: top;
+  padding: 10px;
+}
+
+td.result {
+  width: 33%
+}
+
 input {
   width: 20px;
   padding: 10px;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 select {
@@ -10,15 +23,15 @@ select {
   padding: 5px;
 }
 
-.inputblack {
+.inputb {
   background-color: gray;
   color: white;
 }
-.inputyellow {
+.inputy {
   background-color: yellow;
   color: gray;
 }
-.inputgreen {
+.inputg {
   background-color: darkgreen;
   color: white;
 }
@@ -61,8 +74,9 @@ select {
 }
 
 .App-message {
+  visibility: hidden;
   color: darkslategray;
-  font-size: calc(0px + 2vmin);
+  font-size: 12px;
 }
 
 .App-link {
@@ -92,7 +106,6 @@ ul {
   clear: both;
 }
 
-/* Create two equal columns that sits next to each other */
 .column {
   float: left;
   width: 150px;
@@ -119,3 +132,17 @@ mark.red {
   background: none;
 }
 
+mark.g {
+  color:green;
+  background: none;
+}
+
+mark.b {
+  color:gray;
+  background: none;
+}
+
+mark.y {
+  color:yellow;
+  background: none;
+}
