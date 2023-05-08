@@ -1,0 +1,49 @@
+---
+# Source: wordle-solver-frontend/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-wordle-solver-frontend
+  labels:
+    helm.sh/chart: wordle-solver-frontend-0.1.0
+    app.kubernetes.io/name: wordle-solver-frontend
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wordle-solver-frontend
+      app.kubernetes.io/instance: release-name
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wordle-solver-frontend
+        app.kubernetes.io/instance: release-name
+    spec:
+      containers:
+        - name: wordle-solver-frontend
+          image: "rajthecat/wordl-solver-frontend:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+          volumeMounts:
+            mountPath: /etc/nginx/conf.d
+            name: conf 
+      volumes:
+        configMap:
+          name: nginx-conf
+        name: conf

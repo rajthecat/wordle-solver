@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "wordle-solver-frontend.fullname" . }}
+  labels:
+    {{- include "wordle-solver-frontend.labels" . | nindent 4 }}
+data:
+  {{- toYaml .Values.configMapData | default "" | nindent 2 }}
