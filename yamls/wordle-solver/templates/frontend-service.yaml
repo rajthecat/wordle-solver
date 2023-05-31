@@ -1,0 +1,27 @@
+---
+# Source: wordle-solver/templates/frontend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-wordle-solver-frontend-service
+  labels:
+    tier: frontend
+    helm.sh/chart: wordle-solver-0.1.3
+    app.kubernetes.io/name: wordle-solver
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.0.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    tier: frontend
+    helm.sh/chart: wordle-solver-0.1.3
+    app.kubernetes.io/name: wordle-solver
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.0.1"
+    app.kubernetes.io/managed-by: Helm

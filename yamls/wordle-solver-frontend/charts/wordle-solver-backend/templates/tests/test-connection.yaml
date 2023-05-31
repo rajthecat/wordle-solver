@@ -1,0 +1,21 @@
+---
+# Source: wordle-solver-frontend/charts/wordle-solver-backend/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "release-name-wordle-solver-backend-test-connection"
+  labels:
+    helm.sh/chart: wordle-solver-backend-0.1.0
+    app.kubernetes.io/name: wordle-solver-backend
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['release-name-wordle-solver-backend:4000']
+  restartPolicy: Never

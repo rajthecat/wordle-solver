@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-wordle-solver-frontend-configmap
+  labels:
+    tier: frontend
+    {{- include "wordle-solver.labels" . | nindent 4 }}
+data:
+  nginx.conf: |
+    # The identifier backend is internal to nginx, and used to name this specific upstream
+    upstream backend {
+        # The internal DNS name used by the backend Service inside Kubernetes
+        server {{ .Release.Name }}-wordle-solver-backend-service:4000;
+    }
+    server {
+        listen       80;
+        listen       4000;
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+        location /wordl {
+            # The following statement will proxy traffic to the upstream named backend
+            proxy_pass http://backend/wordl;
+        }
+        #error_page  404              /404.html;
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }

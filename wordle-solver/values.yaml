@@ -1,0 +1,27 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: rajthecat/wordl-solver-frontend
+    pullPolicy: Always
+    tag: "latest"
+  service:
+    type: LoadBalancer
+    port: 80
+
+backend:
+  replicaCount: 1
+  image:
+    repository: rajthecat/wordl-solver-backend
+    pullPolicy: Always
+    tag: "latest"
+  service:
+    type: ClusterIP
+    port: 4000
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

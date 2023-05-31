@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-wordle-solver-frontend-deployment
+  labels:
+    tier: frontend
+    {{- include "wordle-solver.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      tier: frontend
+      {{- include "wordle-solver.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        tier: frontend
+        {{- include "wordle-solver.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-frontend
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        ports:
+          - name: http
+            containerPort: {{ .Values.frontend.service.port }}
+            protocol: TCP
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/nginx/conf.d
+      volumes:
+      - name: conf
+        configMap:
+          name: {{ .Release.Name }}-wordle-solver-frontend-configmap
