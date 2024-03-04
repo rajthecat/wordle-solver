@@ -1,3 +1,6 @@
+docker build -t rajthecat/wordl-solver-frontend:1.1 -f ./frontend/Dockerfile ./frontend
+docker build -t rajthecat/wordl-solver-backend:1.1 -f ./backend/Dockerfile ./backend
+
 az login
 az account show
 $ResourceGroup = "wordle-solver"

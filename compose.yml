@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  backend:
+    image: rajthecat/wordl-solver-backend:1.1
+    ports:
+      - "4000:4000"
+    networks:
+        wordl-net:
+            aliases:
+                - backend
+
+  frontend:
+    image: rajthecat/wordl-solver-frontend:1.1
+    ports:
+      - "80:80"
+    links:
+      - backend:backend
+    depends_on:
+      - backend
+    networks:
+        wordl-net:
+            aliases:
+                - frontend
+
+networks:
+  wordl-net: {}
