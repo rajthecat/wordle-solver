@@ -2,7 +2,7 @@ version: '3'
 
 services:
   backend:
-    image: rajthecat/wordl-solver-backend:1.1
+    image: rajthecat/wordl-solver-backend:1.2
     ports:
       - "4000:4000"
     networks:
@@ -11,7 +11,7 @@ services:
                 - backend
 
   frontend:
-    image: rajthecat/wordl-solver-frontend:1.1
+    image: rajthecat/wordl-solver-frontend:1.2
     ports:
       - "80:80"
     links:
